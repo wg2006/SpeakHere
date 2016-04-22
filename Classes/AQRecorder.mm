@@ -189,7 +189,7 @@ void AQRecorder::StartRecord(CFStringRef inRecordFile)
 		mFileName = CFStringCreateCopy(kCFAllocatorDefault, inRecordFile);
 
 		// specify the recording format
-		SetupAudioFormat(kAudioFormatLinearPCM);
+		SetupAudioFormat(kAudioFormatMPEG4AAC);
 		
 		// create the queue
 		XThrowIfError(AudioQueueNewInput(
@@ -224,7 +224,7 @@ void AQRecorder::StartRecord(CFStringRef inRecordFile)
 		// allocate and enqueue buffers
 		bufferByteSize = ComputeRecordBufferSize(&mRecordFormat, kBufferDurationSeconds);	// enough bytes for half a second
 		for (i = 0; i < kNumberRecordBuffers; ++i) {
-			XThrowIfError(AudioQueueAllocateBuffer(mQueue, bufferByteSize, &mBuffers[i]),
+			XThrowIfError(AudioQueueAllocateBuffer(mQueue, 1024*mRecordFormat.mChannelsPerFrame, &mBuffers[i]),
 					   "AudioQueueAllocateBuffer failed");
 			XThrowIfError(AudioQueueEnqueueBuffer(mQueue, mBuffers[i], 0, NULL),
 					   "AudioQueueEnqueueBuffer failed");
